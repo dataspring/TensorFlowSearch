@@ -1,10 +1,11 @@
-Visual Search Server
+TensorFlow Search
 ===============
 
-A simple implementation of Visual Search using TensorFlow, InceptionV3 model and AWS GPU instances.
+A forked project from **[Visual Search Server](https://github.com/AKSHAYUBHAT/VisualSearchServer/)** by AKSHAYU BHAT and modified to add image crawler and web app changes. 
 
-This codebase implements a simple visual indexing and search system, using features derived from Google's inception 
-model trained on the imagenet data. The easist way to use it is to launch following AMI using GPU enabled g2 instances.
+A simple implementation of Visual Search using TensorFlow, InceptionV3 model and Google Cloud. Implements a simple visual indexing and search system, using features derived from Google's inception 
+model trained on the imagenet data. 
+
 It already contains features computed on ~450,000 images (female fashion), the feature computation took 22 hours on 
 a spot AWS g2 (single GPU) instance. i.e. ~ 230,000 images / 1 $ . Since I did not use batching, it might be possible to 
 get even better performance.
@@ -15,7 +16,7 @@ Nearest neighbor search can be performed in an approximate manner using nearpy (
 ![UI Screenshot](appcode/static/alpha3.png "Alpha Screenshot Female Fashion")
 ![UI Screenshot](appcode/static/alpha4.png "Alpha Screenshot NYC, Streetview & Dashcam")
 
-####Running code on AWS
+####Running code on Google Cloud
 
 The easiest way to use this project is to launch "ami-b80f0ad2"  in AWS North Virginia (us-east-1) region.
 **"ami-3eb0dd29" is new AMI with latest version of Tensorflow, derived from another public image which I found on AWS.
