@@ -47,35 +47,37 @@ def setup():
     Used AMI modified for Python2.7 https://gist.github.com/AlexJoz/1670baf0b32573ca7923
     Following commands show other packages/libraries installed while setting up the AMI
     """
-    sudo("rm -rf ~/deep/carousell/")
-    sudo("mkdir ~/deep/")
-    sudo("mkdir ~/deep/carousell/")
-    sudo("mkdir ~/deep/carousell/images/")
-    sudo("mkdir ~/deep/carousell/index/")
+    sudo("rm -rf /home/deep/")
+    sudo("mkdir /home/deep/")
+    sudo("mkdir /home/deep/carousell/")
+    sudo("mkdir /home/deep/carousell/images/")
+    sudo("mkdir /home/deep/carousell/index/")
+    sudo("chmod 777 -R /home/deep/")
+    sudo("chmod 777 -R /home/deep/")
+
     
     #sudo("chmod 777 /mnt/") # sometimes the first one will fail due to timeout and in any case this is idempotent
     #sudo("chmod 777 /mnt/")
     
-    sudo("apt-get install build-essential")
-    sudo("apt-get install python-dev")  # for python2.x installs
-    sudo("apt-get install git")    
-    sudo("add-apt-repository ppa:kirillshkrogalev/ffmpeg-next")
-    sudo("apt-get update")
-    sudo("apt-get install -y ffmpeg")
+    # sudo("apt-get install build-essential")
+    # sudo("apt-get install python-dev")  # for python2.x installs
+    # sudo("apt-get install git")    
+    # sudo("add-apt-repository ppa:kirillshkrogalev/ffmpeg-next")
+    # sudo("apt-get update")
+    # sudo("apt-get install -y ffmpeg")
 
-    run("git clone https://github.com/AKSHAYUBHAT/VisualSearchServer")
-    sudo("apt-get install python-pip")
-    sudo("pip install fabric")
-    sudo("pip install --upgrade awscli")
-    sudo("pip install --upgrade fabric")
-    sudo("pip install --upgrade flask")
-    sudo("pip install --upgrade ipython")
-    sudo("pip install --upgrade jupyter")
-    sudo("apt-get install -y python-scipy")
-    sudo("apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran")
-    sudo("pip install --upgrade nearpy")
-    sudo("sudo apt-get install sqlite3 libsqlite3-dev")
-    sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl")
+    # run("git clone https://github.com/dataspring/TensorFlowSearch")
+    # sudo("apt-get install python-pip")
+    # sudo("pip install fabric")
+    # sudo("pip install --upgrade fabric")
+    # sudo("pip install --upgrade flask")
+    # sudo("pip install --upgrade ipython")
+    # sudo("pip install --upgrade jupyter")
+    # sudo("apt-get install -y python-scipy")
+    # sudo("apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran")
+    # sudo("pip install --upgrade nearpy")
+    # sudo("sudo apt-get install sqlite3 libsqlite3-dev")
+    # sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl")
 	
 @task
 def localdevsetup():
@@ -83,12 +85,9 @@ def localdevsetup():
     Task for initial set up of local instance.
     call the setup() followed by tools installation locally
     """
-    sudo("pip install  ")
-    sudo("pip install  flask")
-    sudo("pip install  ipython")
-    sudo("pip install  jupyter")
-    sudo("pip install  scipy")
-    sudo("pip install  nearpy")
+    setup()
+    sudo("dpkg -i vscode-amd64.deb")
+
 
 
 @task
