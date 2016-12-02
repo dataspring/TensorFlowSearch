@@ -6,12 +6,13 @@ USER = "nachi"  #local user
 #HOST = "192.168.1.117" #home wifi
 HOST = "198.162.10.181" #office ether
 #HOST = "104.199.121.106"  #gce public
+LOCALHOST = "127.0.0.1"  #localhost ip
 
 #AWS = sys.platform != 'darwin'
 AWS = sys.platform != 'linux2'
 #private_key =  "~/.ssh/cs5356"
 #private_key =  "/home/osboxes/nachi/keys/id_rsa"
-private_key =  "/home/osboxes/Vs-ver2/keys/id_rsa"
+private_key =  "/home/deep/keys/id_rsa"
 CONFIG_PATH = __file__.split('settings.py')[0]
 
 BUCKET_NAME = "aub3visualsearch"
@@ -20,15 +21,11 @@ PREFIX = "nyc"
 # DATA_PATH ="/mnt/nyc_images/"
 
 
-INDEX_PATH = "/home/osboxes/Vs-ver2/carousell/index/"
-DATA_PATH ="/home/osboxes/Vs-ver2/carousell/images/"
-DONE_DATA_PATH ="/home/osboxes/Vs-ver2/carousell/done/"
-SQLITE_PATH = "/home/osboxes/Vs-ver2/sqllite3/"
 
-# INDEX_PATH = "/home/sgd.cloud/deep/carousell/index/"
-# DATA_PATH ="/home/sgd.cloud/deep/carousell/images/"
-# DONE_DATA_PATH ="/home/sgd.cloud/deep/carousell/done/"
-# SQLITE_PATH = "/home/sgd.cloud/deep/carousell/sqllite3/"
+ INDEX_PATH = "/home/deep/carousell/index/"
+ DATA_PATH ="/home/deep/carousell/images/"
+ DONE_DATA_PATH ="/home/deep/carousell/done/"
+ SQLITE_PATH = "/home/deep/carousell/sqllite3/"
 
 RESULT_STEPS = 100
 MAX_ITER = 50

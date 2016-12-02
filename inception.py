@@ -1,8 +1,14 @@
+import sqlite3, shutil
 import time,glob,re,sys,logging,os,tempfile
 import numpy as np
 import tensorflow as tf
 from scipy import spatial
-from settings import AWS,INDEX_PATH,CONFIG_PATH,DATA_PATH,BUCKET_NAME,PREFIX
+from settings import AWS,INDEX_PATH,CONFIG_PATH,DATA_PATH,DONE_DATA_PATH,BUCKET_NAME,PREFIX
+from settings import SQLITE_PATH,INDEX_RUN,CRAWL_RUN,SQLDB_NAME,BATCH_SIZE
+from os.path import basename
+
+
+
 try:
     from settings import DEMO
 except ImportError:
@@ -145,9 +151,65 @@ def get_batch(path,batch_size = 1000):
     yield image_data
 
 
+def move_files_updatedb(files, feat_fname, files_name):
+
+    print "Making entires into sqllite db for indexed files of count : " + str(BATCH_SIZE) + '....'
+    logging.info("Making entires into sqllite db for indexed files of count : " + str(BATCH_SIZE) + '....')
+    #----------------------- sqllite3 connection ---------------------------
+    sqlitePath = SQLITE_PATH + SQLDB_NAME
+    try:
+        conn = sqlite3.connect(sqlitePath)
+        print 'opened ' + sqlitePath + ' successfully'
+        #------------drop table SellImages
+        # try:
+        #     conn.execute('delete from SellImages')
+        #     conn.commit()
+        # except sqlite3.Error as err:
+        #     print err.message    
+
+    except sqlite3.Error as connError:
+        print connError.message
+        print 'Exiting App'
+        return None
+    #-------------------------------------------------------------------------    
+    sqlInsert = "Insert into IndexImages (id, imgpath, imgfilename, indexpath, npyfilename, npyfilelist, indexrun) Values(?, ?, ?, ?, ?, ?, ?)"
+    npyfilename = basename(feat_fname)
+    npyfilelist = basename(files_name)  
+
+    count = 0
+    for each in files:
+        
+        #----- prep variables ---------------------------------
+        imgId = os.path.splitext(basename(each))[0]
+        imgFileName = basename(each)
+        #------------------------- insret into sqllite ------------------------------------
+        try:
+            with conn:
+                conn.execute(sqlInsert, (imgId, DATA_PATH, imgFileName, INDEX_PATH, npyfilename, npyfilelist, INDEX_RUN))
+                count = count + 1
+        except sqlite3.Error as inte:
+            print inte.message, imgId
+
+    print "Made " + str(count) +" entires into sqllite db for indexed files"
+    logging.info("Made " + str(count) +" entires into sqllite db for indexed files")
+
+
+def move_indexed_files(DONE_DATA_PATH, files):
+    print 'Moving processed files of count : '+ str(BATCH_SIZE)
+    count = 0
+    for each in files:
+        try:
+            shutil.move(each, DONE_DATA_PATH)
+            count = count+1
+        except shutil.Error as err:
+            print err.message
+    print 'Moved successfully ' + str(count) + ' files '
+    logging.info('Moved successfully ' + str(count) + ' files ')
+
+
 def store_index(features,files,count,index_dir,bucket_name=BUCKET_NAME,prefix=PREFIX):
-    feat_fname = "{}/{}.feats_pool3.npy".format(index_dir,count)
-    files_fname = "{}/{}.files".format(index_dir,count)
+    feat_fname = "{}/{}-{}.feats_pool3.npy".format(index_dir,CRAWL_RUN,count)
+    files_fname = "{}/{}-{}.files".format(index_dir,CRAWL_RUN,count)
     logging.info("storing in {}".format(index_dir))
     with open(feat_fname,'w') as feats:
         np.save(feats,np.array(features))
@@ -157,6 +219,9 @@ def store_index(features,files,count,index_dir,bucket_name=BUCKET_NAME,prefix=PR
         os.system('aws s3 cp {} s3://{}/{}_index/ --region "us-east-1"'.format(feat_fname,bucket_name,prefix))
         os.system('aws s3 cp {} s3://{}/{}_index/ --region "us-east-1"'.format(files_fname,bucket_name,prefix))
         logging.info("uploaded {} and {} to s3://{}/{}_index/ ".format(feat_fname,files_fname,bucket_name,prefix))
+    move_files_updatedb(files, feat_fname, files_fname)
+    move_indexed_files(DONE_DATA_PATH, files)  
+
 
 def extract_features(image_data,sess):
     pool3 = sess.graph.get_tensor_by_name('incept/pool_3:0')
@@ -180,3 +245,53 @@ def download(filename):
     else:
         os.system("cp {}/{} appcode/static/examples/{}".format(DATA_PATH,filename.split("/")[-1],filename.split("/")[-1])) # this needlessly slows down the code, handle it elegantly by using the same directory as static dir in flask.
 
+
+def getsqlRes(idList):
+    
+    retList = []
+    #----------------------- sqllite3 connection ---------------------------
+    sqlitePath = SQLITE_PATH + SQLDB_NAME
+    try:
+        conn = sqlite3.connect(sqlitePath).cursor()
+        print 'opened ' + sqlitePath + ' successfully'
+
+    except sqlite3.Error as connError:
+        print connError.message
+        print 'Exiting App'
+        # return None
+        return retList
+    #-------------------------------------------------------------------------    
+    
+    sqlInsert = "Select * from SellImages where id = ?"
+
+    #idList = ['71851375.jpg', '71820714.jpg', '71821009.jpg', '71828693.jpg', '71834857.jpg', '71824377.jpg', '71842809.jpg', '71826205.jpg', '71839376.jpg', '71832426.jpg', '71833280.jpg', '71833201.jpg']
+    
+	
+    for count in range (0,len(idList)) :
+        #------------------------- insret into sqllite ------------------------------------
+        try:
+            res = conn.execute(sqlInsert, [idList[count][:-4]])
+            fetch = res.fetchone()
+        except sqlite3.Error as inte:
+            print inte.message, idList[count]
+        
+        if fetch is None:
+            # {k[0]: None for k in fetch.description}
+            # do nothing 
+            pass
+        else:
+           retList.append({k[0]: v for k, v in list(zip(res.description, fetch))})
+
+    #print retList
+    if conn:
+        conn.close()
+        del conn
+
+    return retList
+
+    
+
+
+
+    
+    
