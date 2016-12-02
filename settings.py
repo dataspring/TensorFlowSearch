@@ -21,11 +21,10 @@ PREFIX = "nyc"
 # DATA_PATH ="/mnt/nyc_images/"
 
 
-
- INDEX_PATH = "/home/deep/carousell/index/"
- DATA_PATH ="/home/deep/carousell/images/"
- DONE_DATA_PATH ="/home/deep/carousell/done/"
- SQLITE_PATH = "/home/deep/carousell/sqllite3/"
+INDEX_PATH = "/home/deep/carousell/index/"
+DATA_PATH ="/home/deep/carousell/images/"
+DONE_DATA_PATH ="/home/deep/carousell/done/"
+SQLITE_PATH = "/home/deep/carousell/sqllite3/"
 
 RESULT_STEPS = 100
 MAX_ITER = 50
