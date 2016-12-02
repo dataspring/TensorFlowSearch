@@ -21,6 +21,7 @@ PREFIX = "nyc"
 # DATA_PATH ="/mnt/nyc_images/"
 
 
+# path to files
 INDEX_PATH = "/home/deep/carousell/index/"
 DATA_PATH ="/home/deep/carousell/images/"
 DONE_DATA_PATH ="/home/deep/carousell/done/"

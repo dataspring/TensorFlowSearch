@@ -168,6 +168,7 @@ def clear():
     """
     delete logs
     """
+    print "Clearing log files now..."
     local('rm logs/*.log &')
 
 
