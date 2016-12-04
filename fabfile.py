@@ -14,6 +14,7 @@ except ImportError:
     pass
 
 from settings import USER,private_key,HOST
+
 env.user = USER
 env.key_filename = private_key
 env.hosts = [HOST,]
@@ -22,6 +23,9 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%m-%d %H:%M',
                     filename='logs/fab.log',
                     filemode='a')
+
+from contextlib import contextmanager
+
 
 
 
@@ -47,6 +51,7 @@ def setup():
     Used AMI modified for Python2.7 https://gist.github.com/AlexJoz/1670baf0b32573ca7923
     Following commands show other packages/libraries installed while setting up the AMI
     """
+    print "running server setup..."
     sudo("rm -rf /home/deep/")
     sudo("mkdir /home/deep/")
     sudo("mkdir /home/deep/carousell/")
@@ -86,8 +91,8 @@ def localdevsetup():
     call the setup() followed by tools installation locally
     """
     setup()
-    sudo("dpkg -i vscode-amd64.deb")
-
+    print "running local dev setup"
+    #sudo("dpkg -i vscode-amd64.deb")
 
 
 @task
@@ -310,3 +315,7 @@ def CarousellImages():
                                     
 	print 'CarousellImages completed, Total processed : ' + str(processCount)	+ ', downloaded : ' + str(downloadCount)	
     logging.info('CarousellImages completed, Total processed : ' + str(processCount)	+ ', downloaded : ' + str(downloadCount))
+
+
+ 
+
