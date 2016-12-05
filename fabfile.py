@@ -87,6 +87,10 @@ def setup():
     sudo("mkdir /home/deep/carousell/")
     sudo("mkdir /home/deep/carousell/images/")
     sudo("mkdir /home/deep/carousell/index/")
+    sudo("mkdir /home/deep/carousell/sqllite3/")
+    sudo("mkdir /home/deep/carousell/done/")
+    sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/carousell/sqllite3/")
+
     sudo("chmod 777 -R /home/deep/")
     sudo("chmod 777 -R /home/deep/")
 
@@ -123,11 +127,11 @@ def localdevsetup():
     setup()
     print "running local development tools setup"
     #----- Visual studio code setup ----------------------
-    # sudo ("add-apt-repository ppa:ubuntu-desktop/ubuntu-make")
-    # sudo ("apt-get update")
-    # sudo ("apt-get install ubuntu-make")
-    # sudo("umake ide visual-studio-code")
-    sudo ("apt-get install visual-studio-code")
+    sudo ("add-apt-repository ppa:ubuntu-desktop/ubuntu-make")
+    sudo ("apt-get update")
+    sudo ("apt-get install ubuntu-make")
+    sudo("umake ide visual-studio-code")
+    # sudo ("apt-get install visual-studio-code")
     #----- FileZilla Setup ----------------------
     sudo ("apt-get install filezilla")
     #----- Valentina Studio /sqlite3 browser Setup ----------------------
@@ -150,31 +154,6 @@ def server():
     start server
     """
     local('python server.py')
-
-
-@task
-def demo_fashion():
-    """
-    Start Demo using precomputed index for 450 thousand female fashion images.
-    """
-    local('aws s3api get-object --bucket aub3visualsearch --key "fashion_index.tar.gz" --request-payer requester /mnt/fashion_index.tar.gz')
-    local('cd /mnt/;tar -zxvf fashion_index.tar.gz')
-    local('echo "\nDEMO=\'fashion_images\'" >> settings.py')
-    local('echo "\nINDEX_PATH=\'/mnt/fashion_index/\'" >> settings.py')
-    local('python server.py &')
-    local('tail -f logs/server.log')
-
-@task
-def demo_nyc():
-    """
-    Start Demo using precomputed index for 26 thousand street view / dashcam style images.
-    """
-    local('aws s3api get-object --bucket aub3visualsearch --key "nyc_index.tar.gz" --request-payer requester /mnt/nyc_index.tar.gz')
-    local('cd /mnt/;tar -zxvf nyc_index.tar.gz')
-    local('echo "\nDEMO=\'nyc_images\'" >> settings.py')
-    local('echo "\nINDEX_PATH=\'/mnt/nyc_index/\'" >> settings.py')
-    local('python server.py &')
-    local('tail -f logs/server.log')
 
 
 @task
@@ -214,31 +193,6 @@ def clear():
     print "Clearing log files now..."
     local('rm logs/*.log &')
 
-
-@task
-def test():
-    inception.load_network()
-    count = 0
-    start = time.time()
-    test_images =  os.path.join(os.path.dirname(__file__),'tests/images')
-    test_index = os.path.join(os.path.dirname(__file__), 'tests/index')
-    try:
-        shutil.rmtree(test_index)
-    except:
-        pass
-    os.mkdir(test_index)
-    with inception.tf.Session() as sess:
-        for image_data in inception.get_batch(test_images,batch_size=2):
-            # batch size is set to 2 to distinguish between latency associated with first batch
-            if len(image_data):
-                print "Batch with {} images loaded in {} seconds".format(len(image_data),time.time()-start)
-                start = time.time()
-                count += 1
-                features,files = inception.extract_features(image_data,sess)
-                print "Batch with {} images processed in {} seconds".format(len(features),time.time()-start)
-                start = time.time()
-                inception.store_index(features,files,count,test_index)
-				
 
 @task
 def CarousellImages():
