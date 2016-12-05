@@ -1,4 +1,5 @@
 import os,sys,logging,time,shutil
+import getpass
 from fabric.state import env
 from fabric.api import env,local,run,sudo,put,cd,lcd,puts,task,get,hide
 import requests, json, sqlite3, urllib
@@ -13,20 +14,49 @@ except ImportError:
     print "could not import main module limited to boostrap actions"
     pass
 
-from settings import USER,private_key,HOST
+from settings import USER,private_key,HOST,LOCALUSER,localhost_private_key,LOCALHOST
 
-env.user = USER
-env.key_filename = private_key
-env.hosts = [HOST,]
+
+env.user = LOCALUSER
+env.key_filename = localhost_private_key
+env.password = getpass.getpass('sudo password: ')
+env.hosts = [LOCALHOST,]
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M',
                     filename='logs/fab.log',
                     filemode='a')
 
-from contextlib import contextmanager
 
 
+@task
+def live():
+    """
+    Select live environment
+    """
+    env.user = USER
+    env.password = getpass.getpass('sudo password: ')
+    env.key_filename = private_key
+    env.hosts = [HOST,]
+    
+
+@task
+def getusername():
+    #print getpass.getuser()
+    return getpass.getuser()
+
+@task
+def getip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 0))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
 
 
 @task
@@ -64,25 +94,25 @@ def setup():
     #sudo("chmod 777 /mnt/") # sometimes the first one will fail due to timeout and in any case this is idempotent
     #sudo("chmod 777 /mnt/")
     
-    # sudo("apt-get install build-essential")
-    # sudo("apt-get install python-dev")  # for python2.x installs
-    # sudo("apt-get install git")    
-    # sudo("add-apt-repository ppa:kirillshkrogalev/ffmpeg-next")
-    # sudo("apt-get update")
-    # sudo("apt-get install -y ffmpeg")
+    sudo("apt-get install build-essential")
+    sudo("apt-get install python-dev")  # for python2.x installs
+    sudo("apt-get install git")    
+    sudo("add-apt-repository ppa:kirillshkrogalev/ffmpeg-next")
+    sudo("apt-get update")
+    sudo("apt-get install -y ffmpeg")
 
-    # run("git clone https://github.com/dataspring/TensorFlowSearch")
-    # sudo("apt-get install python-pip")
-    # sudo("pip install fabric")
-    # sudo("pip install --upgrade fabric")
-    # sudo("pip install --upgrade flask")
-    # sudo("pip install --upgrade ipython")
-    # sudo("pip install --upgrade jupyter")
-    # sudo("apt-get install -y python-scipy")
-    # sudo("apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran")
-    # sudo("pip install --upgrade nearpy")
-    # sudo("sudo apt-get install sqlite3 libsqlite3-dev")
-    # sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl")
+    #run("git clone https://github.com/dataspring/TensorFlowSearch")
+    sudo("apt-get install python-pip")
+    sudo("pip install fabric")
+    sudo("pip install --upgrade fabric")
+    sudo("pip install --upgrade flask")
+    sudo("pip install --upgrade ipython")
+    sudo("pip install --upgrade jupyter")
+    sudo("apt-get install -y python-scipy")
+    sudo("apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran")
+    sudo("pip install --upgrade nearpy")
+    sudo("apt-get install sqlite3 libsqlite3-dev")
+    sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl")
 	
 @task
 def localdevsetup():
@@ -91,9 +121,17 @@ def localdevsetup():
     call the setup() followed by tools installation locally
     """
     setup()
-    print "running local dev setup"
-    #sudo("dpkg -i vscode-amd64.deb")
-
+    print "running local development tools setup"
+    #----- Visual studio code setup ----------------------
+    # sudo ("add-apt-repository ppa:ubuntu-desktop/ubuntu-make")
+    # sudo ("apt-get update")
+    # sudo ("apt-get install ubuntu-make")
+    # sudo("umake ide visual-studio-code")
+    sudo ("apt-get install visual-studio-code")
+    #----- FileZilla Setup ----------------------
+    sudo ("apt-get install filezilla")
+    #----- Valentina Studio /sqlite3 browser Setup ----------------------
+    sudo ("apt-get install sqlitebrowser")
 
 @task
 def connect():
