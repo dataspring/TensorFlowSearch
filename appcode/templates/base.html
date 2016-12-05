@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html {% block ngblock %}ng-app="cveditor"{% endblock %}>
   <head>
     <meta charset="UTF-8">
-    <title>Visual Search by Akshay Bhat</title>
+    <title>Visual Search for a E-commerce - Prototype</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -29,16 +29,24 @@
     <!-- Site wrapper -->
     <div class="wrapper" {% block ng_control %} {% endblock %}>
       <header class="main-header">
-        <a href="/" class="logo"><b>Visual</b>Search</a>
+        <a href="/" class="logo">
+            <span style="color:#ffffff"><b>ShoppingSite&nbsp;&nbsp;</b></span><b>Visual</b>Search
+        </a>
+
         <nav class="navbar navbar-static-top" role="navigation">
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
                 {% block page_header %}
                 {% endblock %}
-                <li><a target="_blank" href="http://www.akshaybhat.com">By Akshay Bhat</a></li>
+                <li><a target="_blank" href="http://github.com/dataspring">By Nachi Nachiappan</a></li>
             </ul>
           </div>
+
         </nav>
+
+
+          
+
       </header>
     {% block page_sidebar %}
     {% endblock %}
@@ -56,6 +64,8 @@
 
       <!-- Right side column. Contains the navbar and content of the page -->
       <div class="content-wrapper">
+          {% block page_content_above %}
+          {% endblock %}
           {% block page_content %}
           {% endblock %}
       </div><!-- /.content-wrapper -->
@@ -72,7 +82,7 @@
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-65368241-1', 'auto');
+    ga('create', 'UA-49703780-1', 'auto');
     ga('send', 'pageview');
   </script>
   </body>

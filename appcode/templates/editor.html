@@ -46,6 +46,10 @@
         <div id="canvas-wrapper">
             <canvas id="canvas"  width="500" height="500"></canvas>
         </div>
+        <div id="approp-panel" class="w3-panel {[ tagAppropClass ]} ">
+            <p id="tagApprops"  ng-model="tagApprops" class="h4status" ng-show="checkTagApprops()">{[ tagApprops ]}</p>    
+        </div>    
+
         <div class="operation_search">
             <button href="" class="btn btn-warning" id="search_quick" ng-click="search_quick()"><i class="fa fa-search"></i> Approximate Seach by Image</button>
             <button href="" class="btn btn-success" id="segment" ng-click="search()"><i class="fa fa-search"></i> Seach by Image</button>
@@ -53,6 +57,13 @@
         <div id="status" ng-model="status" ng-show="checkStatus()" class="alert alert-info  alert-dismissable"><h4 class="h4status">{[ status ]}</h4>
                 <button type="button" class="close" ng-click="disableStatus()" aria-hidden="true">x</button>
         </div>
+        <div id="tagstatus" ng-model="tagStatus" ng-show="checkTagStatus()" class="alert alert-warning  alert-dismissable"><h4 class="h4status">{[ tagStatus ]}</h4>
+                <button type="button" class="close" ng-click="disableTagStatus()" aria-hidden="true">x</button>
+        </div>
+        <div class="alert alert-success alert-dismissable" >
+            <h4 id="tagContentType" ng-model="tagContentType" class="h4status" ng-show="checkTagContentType()">{[ tagContentType ]}</h4>
+        </div>
+
     </div>
     <div class=" col-xs-1 col-sm-1 col-md-1 col-lg-1 m-t" object-buttons-enabled="getSelected()" id="side_options_2">
         <div class="outer">
@@ -86,7 +97,21 @@
     <div class=" col-xs-12 col-sm-12 col-md-12 col-lg-6 m-t">
         <div ng-repeat="row in results" class="row m-t" >
             <div ng-repeat="item in row" class="col-lg-3 col-sm-6 col-xs-6" >
-              <img style="max-height:95%;max-width:98%" ng-src="/static/examples/{[ item ]}" />
+
+                <div class="thumb-box"> 
+                    <a href="https://carousell.com/p/{[item.id]}" target="_blank">
+                        <div class="thumb-box-overlay">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-square-o fa-stack-2x"></i>
+                                <i class="fa fa-send fa-stack-1x"></i>
+                            </span>
+                        </div>
+                        <!--<img style="max-height:95%;max-width:98%" ng-src="/static/examples/{[ item ]}" />-->
+                        <img style="max-height:95%;max-width:98%" ng-src="{[ item.imgurl ]}" />
+                    </a>
+                </div>
+                <p>price : {[item.currency]} {[item.price]}</p>
+                <p>{[item.country]}</p>        
             </div>
         </div>
     </div>
@@ -143,5 +168,14 @@
                 <li>
                 </li>
                 <li><a ng-click="showTour()" href="#" id="tutorial"><i class="fa fa-help"></i>Tutorial</a></li>
-                <li><a href="https://github.com/AKSHAYUBHAT/VisualSearchServer" target="_blank" id="github"><i class="fa fa-github"></i> Github</a></li>
+                <li><a href="https://github.com/dataspring/TensorFlowSearch " target="_blank" id="github"><i class="fa fa-github"></i> Github</a></li>
+                <!--<li><a href="https://github.com/AKSHAYUBHAT/VisualSearchServer" target="_blank" id="github">OpenSource Credit</a></li>-->
+{% endblock %}
+
+
+{% block page_content_above %}
+<div class="row" style="margin-left:15px; color:#3c8dbc">
+    <span>Powered by TensorFlow, Sqlite3, Flask, Python, Clarifai (Ai Visual Engine). Added crawler batch, content metadata capture, external api calls, etc. <small>Opensource Credit - forked and fully modified</small> </span>
+</div>
+
 {% endblock %}

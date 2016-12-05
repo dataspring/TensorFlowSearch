@@ -27,10 +27,10 @@ PREFIX = "nyc"
 
 
 # path to files
-INDEX_PATH = "/home/deep/carousell/index/"
-DATA_PATH ="/home/deep/carousell/images/"
-DONE_DATA_PATH ="/home/deep/carousell/done/"
-SQLITE_PATH = "/home/deep/carousell/sqllite3/"
+INDEX_PATH = "/home/deep/shopsite/index/"
+DATA_PATH ="/home/deep/shopsite/images/"
+DONE_DATA_PATH ="/home/deep/shopsite/done/"
+SQLITE_PATH = "/home/deep/shopsite/sqllite3/"
 
 # trial run settings 
 RESULT_STEPS = 10

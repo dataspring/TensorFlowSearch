@@ -61,7 +61,7 @@ def getip():
 @task
 def notebook():
     """
-    Run an IPython notebook on an AWS server
+    Run an IPython notebook on an Cloud/AWS server
     """
     from IPython.lib.security import passwd
     command = "ipython notebook --ip=0.0.0.0  --certfile=mycert.pem --NotebookApp.password={} --no-browser".format(passwd())
@@ -76,19 +76,19 @@ def gen_ssl():
 @task
 def setup():
     """
-    Task for initial set up of AWS instance.
+    Task for initial set up of Cloud/AWS instance.
     Used AMI modified for Python2.7 https://gist.github.com/AlexJoz/1670baf0b32573ca7923
     Following commands show other packages/libraries installed while setting up the AMI
     """
     print "running server setup..."
     sudo("rm -rf /home/deep/")
     sudo("mkdir /home/deep/")
-    sudo("mkdir /home/deep/carousell/")
-    sudo("mkdir /home/deep/carousell/images/")
-    sudo("mkdir /home/deep/carousell/index/")
-    sudo("mkdir /home/deep/carousell/sqllite3/")
-    sudo("mkdir /home/deep/carousell/done/")
-    sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/carousell/sqllite3/")
+    sudo("mkdir /home/deep/shopsite/")
+    sudo("mkdir /home/deep/shopsite/images/")
+    sudo("mkdir /home/deep/shopsite/index/")
+    sudo("mkdir /home/deep/shopsite/sqllite3/")
+    sudo("mkdir /home/deep/shopsite/done/")
+    sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/shopsite/sqllite3/")
 
     sudo("chmod 777 -R /home/deep/")
     sudo("chmod 777 -R /home/deep/")
@@ -195,7 +195,7 @@ def clear():
 
 
 @task
-def CarousellImages():
+def ShopSiteImages():
     """
     Get Carosuell Images by Scrapping
     """
@@ -305,8 +305,8 @@ def CarousellImages():
                         except sqlite3.IntegrityError as inte:
                             print inte.message, imgId
                                     
-	print 'CarousellImages completed, Total processed : ' + str(processCount)	+ ', downloaded : ' + str(downloadCount)	
-    logging.info('CarousellImages completed, Total processed : ' + str(processCount)	+ ', downloaded : ' + str(downloadCount))
+	print 'ShopSiteImages completed, Total processed : ' + str(processCount)	+ ', downloaded : ' + str(downloadCount)	
+    logging.info('ShopSiteImages completed, Total processed : ' + str(processCount)	+ ', downloaded : ' + str(downloadCount))
 
 
  

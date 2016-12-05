@@ -343,12 +343,29 @@ $scope.refreshData = function(){
     canvas.renderAll();
 };
 
+
+$scope.checkTagContentType = function(){
+    return $scope.tagContentType;
+}
+
+$scope.checkTagApprops = function(){
+    return $scope.tagApprops;
+}
+
 $scope.checkStatus = function(){
     return $scope.status;
 };
 
+$scope.checkTagStatus = function(){
+    return $scope.tagStatus;
+}
+
 $scope.disableStatus = function(){
     $scope.status = "";
+};
+
+$scope.disableTagStatus = function(){
+    $scope.tagStatus = "";
 };
 
 $scope.check_movement = function(){
@@ -386,13 +403,20 @@ function chunk(arr, size) {
 $scope.search_quick = function () {
     $scope.setFreeDrawingMode(false,$scope.current_mode);
     $scope.check_movement();
+    var a = performance.now();
+    $scope.results = [];
     $scope.status = "Starting Quick Search";
+    $scope.tagStatus = "Starting Image Content Analaysis";
+    $scope.tagApprops = "";
+    $scope.tagContentType = "";
+
     if(canvas.isDrawingMode){
         canvas.isDrawingMode = false;
         canvas.deactivateAll().renderAll();
     }
     $scope.$$phase || $scope.$digest();
     $scope.refreshData();
+
     $.ajax({
         type: "POST",
         url: '/Quick',
@@ -402,21 +426,152 @@ $scope.search_quick = function () {
             'image_url': canvas.toDataURL()
         },
         success: function (response) {
-            $scope.status = "Approximate Search Completed";
+            var b = performance.now();
+            //$scope.status = "Approximate Search Completed";
+            $scope.status = "Approx. Search Completed in " + Math.round((b - a),4) + " ms.";
             $scope.results = chunk(response.results, 4);
             $scope.$$phase || $scope.$digest();
 
         }
     });
+
+    tagUsingClarifai($scope, "Appropriate-ness" );
+    tagUsingClarifai($scope, "Tag" );
+
+
 };
 
 
+function tagUsingClarifai($scope, tagType){
+    
+    var token;
+
+    var a = performance.now();
+
+    var clientData = {
+        'grant_type': 'client_credentials',
+        'client_id': '',
+        'client_secret': ''
+    };
+
+    if (tagType === "Appropriate-ness") {
+         //ecomSite-Nfsw
+         clientData.client_id = 'ESXuZtuhlwIq8moJYmb6FX5TzL9_7S1fCvUg6XgH';
+         clientData.client_secret = 'YjPWvx-qInXfRhOpg-bM77mAE1nqBiooclRofxZZ';
+    }
+    else {
+        //ecomSite-General
+        clientData.client_id = 'Aogy1PlggSYoke2gz8VEgEnk4UIwVJDch0gj4BQz';
+        clientData.client_secret =  'URXHlJ3b9b-tfaEp57sDmqOQmgNXkJzFPCmAsEay';
+    }
+    
+    var fileData = new FormData();
+    fileData.append('encoded_data', canvas.toDataURL().slice(22));
+
+    $.ajax({
+        url: 'https://api.clarifai.com/v1/token',
+        data: clientData,
+        type: 'POST',
+        async: true,
+        success: function (response) {
+            console.log("Obtained token response from Clarifai");
+            //console.log("Token = " + response.access_token);
+            //------------------- do an async call to Calrifai
+            $.ajax({
+                  url: 'https://api.clarifai.com/v1/tag/',
+                  headers: {
+                      'Authorization': 'Bearer ' + response.access_token,
+                      //'Content-Transfer-Encoding' : 'base64'
+                  },
+                  //contentType: 'multipart/form-data',
+                  processData: false,
+                  contentType: false,                  
+                  data: fileData,
+                  type: 'POST',
+                  async: true,
+                  success: function (response) {
+                      // ----------------- process once response arrives from image service ----
+                      console.log(response);
+                      console.log("Obtained response from Clarifai Service 2");
+                      var b = performance.now();
+
+                      if ($scope.tagStatus === "Starting Image Content Analaysis") {
+                          $scope.tagStatus = "";
+                      }
+
+                      if (tagType === "Appropriate-ness") {
+                         parseResponseForApprops(response);
+                         $scope.tagStatus = $scope.tagStatus + " " + "Approp in " + Math.round((b - a),4) + " ms.";
+                         $scope.$apply(); 
+                      }
+                      else {
+                        parseResponseForTags(response);    
+                        $scope.tagStatus = $scope.tagStatus + " " + "Tags in " + Math.round((b - a),4) + " ms.";
+                        $scope.$apply();
+                      }
+                      // ----------------- routine ends here -----------------------------------
+                  }
+              });
+        }
+    });
+}
+
+
+function  parseResponseForTags(r) {
+    var tagJson = {"tagresult":false, "classes":[], "probs": []}
+
+    if (r.status_code === 'OK') {
+        var results = r.results;
+        tagJson.tagresult = true;
+        tagJson.classes = results[0].result.tag.classes.slice(0,5);
+        tagJson.probs = results[0].result.tag.probs.slice(0,5);
+        $scope.tagContentType = 'Image Tags : ' + tagJson.classes.join();
+        $scope.$apply(); 
+    } 
+    else {
+        console.log('Sorry, something is wrong.');
+    }
+    //$('#tags').text(JSON.stringify(tagJson));
+    //return tagJson;
+} 
+
+function parseResponseForApprops(r){
+  
+    var tagJson = {"tagresult":false, "sfw":false, "nsfw": false, "sfwProb":0, "nsfwProb":0}
+
+    if (r.status_code === 'OK') {
+        var results = r.results;
+        tags = results[0].result.tag.classes;
+        tagValues = results[0].result.tag.probs;
+
+        tagJson.tagresult = true;
+        tagJson.sfwProb = tagValues[0];
+        tagJson.nsfwProb = tagValues[1];
+        tagJson.sfw = (tagJson.sfwProb > 0.7) ? true : false;
+        tagJson.nsfw = (tagJson.nsfwProb > 0.7) ? true : false; 
+ 
+        $scope.tagApprops = 'Content Screened : ' + (tagJson.sfw ? 'Appropriate' : 'InAppropriate') + ',  Approp Prob : ' + tagJson.sfwProb.toString().slice(0,5)  + ' InApprop Prob : ' + tagJson.nsfwProb.toString().slice(0,5);
+        $scope.tagAppropClass = tagJson.sfw ? 'w3-noteapp' : 'w3-noteinapp' 
+        $scope.$apply();
+
+    } else {
+        console.log('Sorry, something is wrong.');
+    }
+    //$('#tags').text(JSON.stringify(tagJson));
+    //return tagJson;  
+}
 
 
 $scope.search = function () {
     $scope.setFreeDrawingMode(false,$scope.current_mode);
     $scope.check_movement();
+    var a = performance.now();
+    $scope.results = [];
     $scope.status = "Starting Exact Search can take up to a minute";
+    $scope.tagStatus = "Starting Image Content Analaysis";
+    $scope.tagApprops = "";
+    $scope.tagContentType = "";
+
     if(canvas.isDrawingMode){
         canvas.isDrawingMode = false;
         canvas.deactivateAll().renderAll();
@@ -432,12 +587,15 @@ $scope.search = function () {
             'image_url': canvas.toDataURL()
         },
         success: function (response) {
-            $scope.status = "Exact Search Completed";
+            var b = performance.now();
+            $scope.status = "Exact Search Completed in " + Math.round((b - a),4) + " ms.";
             $scope.results = chunk(response.results, 4);
             $scope.$$phase || $scope.$digest();
 
         }
     });
+        tagUsingClarifai($scope, "Appropriate-ness" );
+    tagUsingClarifai($scope, "Tag" );
 };
 
 }
@@ -466,6 +624,10 @@ cveditor.controller('CanvasControls', function($scope) {
     $scope.getActiveStyle = getActiveStyle;
     $scope.dev = false;
     $scope.status = "Please add image.";
+    $scope.tagStatus = "Image content will be analyzed for appropriate-ness.";
+    $scope.tagApprops = "Content Appropriate-ness: To be determined";
+    $scope.tagContentType = "Tags: To be determined";    
+    $scope.tagAppropClass = 'w3-note';
     $scope.current_mode = null;
     $scope.results = [];
     addAccessors($scope);
