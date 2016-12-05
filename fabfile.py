@@ -19,7 +19,6 @@ from settings import USER,private_key,HOST,LOCALUSER,localhost_private_key,LOCAL
 
 env.user = LOCALUSER
 env.key_filename = localhost_private_key
-env.password = getpass.getpass('sudo password: ')
 env.hosts = [LOCALHOST,]
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -124,6 +123,7 @@ def localdevsetup():
     Task for initial set up of local instance.
     call the setup() followed by tools installation locally
     """
+    env.password = getpass.getpass('sudo password: ')
     setup()
     print "running local development tools setup"
     #----- Visual studio code setup ----------------------
