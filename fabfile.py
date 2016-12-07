@@ -41,7 +41,7 @@ def live():
 
 
 @task 
-def platformdetails()
+def platformdetails():
 
     print 'uname:', platform.uname()
 
