@@ -55,7 +55,7 @@ def platformdetails():
 
 @task
 def getusername():
-    #print getpass.getuser()
+    print 'Uesr : ', getpass.getuser()
     return getpass.getuser()
 
 @task
@@ -69,6 +69,7 @@ def getip():
         IP = '127.0.0.1'
     finally:
         s.close()
+    print 'IP : ', IP
     return IP
 
 
