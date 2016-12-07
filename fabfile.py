@@ -34,7 +34,8 @@ def live():
     Select live environment
     """
     env.user = USER
-    env.password = getpass.getpass('sudo password: ')
+    # for gce - you don't need sudo user as it's always through rsa file authentication
+    # env.password = getpass.getpass('sudo password: ')
     env.key_filename = private_key
     env.hosts = [HOST,]
     
@@ -72,6 +73,14 @@ def notebook():
 def gen_ssl():
     run("openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.key -out mycert.pem")
 
+def yes_or_no(question):
+    reply = str(raw_input(question+' (y/n): ')).lower().strip()
+    if reply[0] == 'y':
+        return True
+    if reply[0] == 'n':
+        return False
+    else:
+        return yes_or_no("please enter your choice")
 
 @task
 def setup():
@@ -81,6 +90,12 @@ def setup():
     Following commands show other packages/libraries installed while setting up the AMI
     """
     print "running server setup..."
+    print env.user
+    print env.hosts
+    if yes_or_no('About to setup the above enviroment, proceed') == False:
+        return
+
+    # start setting up.........................
     sudo("rm -rf /home/deep/")
     sudo("mkdir /home/deep/")
     sudo("mkdir /home/deep/shopsite/")
@@ -90,11 +105,12 @@ def setup():
     sudo("mkdir /home/deep/shopsite/done/")
     sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/shopsite/sqllite3/")
 
-    sudo("chmod 777 -R /home/deep/")
-    sudo("chmod 777 -R /home/deep/")
+    sudo("chmod 700 -R /home/deep/")
+    sudo("chmod 700 -R /home/deep/")
 
     
-    #sudo("chmod 777 /mnt/") # sometimes the first one will fail due to timeout and in any case this is idempotent
+    #sudo("chmod 777 /mnt/") # sometimes the first one will fail due to time
+    # out and in any case this is idempotent
     #sudo("chmod 777 /mnt/")
     
     sudo("apt-get install build-essential")

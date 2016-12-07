@@ -10,7 +10,7 @@ LOCALUSER = "nachi"
 #HOST = "52.90.19.2"
 #HOST = "192.168.1.117" #home wifi
 LOCALHOST = "127.0.0.1" #office ether
-HOST = "104.199.121.106"  #gce public
+HOST = "104.198.123.110"  #gce public
 
 
 #AWS = sys.platform != 'darwin'
