@@ -1,5 +1,5 @@
 import os,sys,logging,time,shutil
-import getpass
+import getpass, socket, platform
 from fabric.state import env
 from fabric.api import env,local,run,sudo,put,cd,lcd,puts,task,get,hide
 import requests, json, sqlite3, urllib
@@ -38,7 +38,20 @@ def live():
     # env.password = getpass.getpass('sudo password: ')
     env.key_filename = private_key
     env.hosts = [HOST,]
-    
+
+
+@task 
+def platformdetails()
+
+    print 'uname:', platform.uname()
+
+    print
+    print 'system   :', platform.system()
+    print 'node     :', platform.node()
+    print 'release  :', platform.release()
+    print 'version  :', platform.version()
+    print 'machine  :', platform.machine()
+    print 'processor:', platform.processor()    
 
 @task
 def getusername():
@@ -92,10 +105,14 @@ def setup():
     print "running server setup..."
     print env.user
     print env.hosts
-    if yes_or_no('About to setup the above enviroment, proceed') == False:
+    if yes_or_no('About to setup the above enviroment,will remove any existing code/data, do you want to proceed') == False:
         return
 
     # start setting up.........................
+    # sudo("rm -rf ~/TensorFlowSearch/")
+    # run("git clone https://github.com/dataspring/TensorFlowSearch")
+
+    
     sudo("rm -rf /home/deep/")
     sudo("mkdir /home/deep/")
     sudo("mkdir /home/deep/shopsite/")
@@ -120,7 +137,7 @@ def setup():
     sudo("apt-get update")
     sudo("apt-get install -y ffmpeg")
 
-    #run("git clone https://github.com/dataspring/TensorFlowSearch")
+
     sudo("apt-get install python-pip")
     sudo("pip install fabric")
     sudo("pip install --upgrade fabric")
