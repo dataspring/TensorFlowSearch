@@ -99,7 +99,6 @@ def yes_or_no(question):
 
 @task
 def livesetup():
-    live()
     setup()
     # start setting up code .........................
     sudo("rm -rf ~/TensorFlowSearch/")
