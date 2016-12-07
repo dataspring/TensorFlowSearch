@@ -45,17 +45,17 @@ def platformdetails():
 
     print 'uname:', platform.uname()
 
-    print
-    print 'system   :', platform.system()
-    print 'node     :', platform.node()
-    print 'release  :', platform.release()
-    print 'version  :', platform.version()
-    print 'machine  :', platform.machine()
-    print 'processor:', platform.processor()    
+    print 'sys.system:', sys.platform 
+    print 'system    :', platform.system()
+    print 'node      :', platform.node()
+    print 'release   :', platform.release()
+    print 'version   :', platform.version()
+    print 'machine   :', platform.machine()
+    print 'processor :', platform.processor()    
 
 @task
 def getusername():
-    print 'Uesr : ', getpass.getuser()
+    print getpass.getuser()
     return getpass.getuser()
 
 @task
@@ -69,7 +69,7 @@ def getip():
         IP = '127.0.0.1'
     finally:
         s.close()
-    print 'IP : ', IP
+    print IP
     return IP
 
 
@@ -96,6 +96,16 @@ def yes_or_no(question):
     else:
         return yes_or_no("please enter your choice")
 
+
+@task
+def livesetup():
+    live
+    setup
+    # start setting up code .........................
+    sudo("rm -rf ~/TensorFlowSearch/")
+    run("git clone https://github.com/dataspring/TensorFlowSearch")
+
+
 @task
 def setup():
     """
@@ -109,11 +119,6 @@ def setup():
     if yes_or_no('About to setup the above enviroment,will remove any existing code/data, do you want to proceed') == False:
         return
 
-    # start setting up.........................
-    # sudo("rm -rf ~/TensorFlowSearch/")
-    # run("git clone https://github.com/dataspring/TensorFlowSearch")
-
-    
     sudo("rm -rf /home/deep/")
     sudo("mkdir /home/deep/")
     sudo("mkdir /home/deep/shopsite/")
@@ -140,6 +145,7 @@ def setup():
 
 
     sudo("apt-get install python-pip")
+    sudo("pip install pycrypto")
     sudo("pip install fabric")
     sudo("pip install --upgrade fabric")
     sudo("pip install --upgrade flask")

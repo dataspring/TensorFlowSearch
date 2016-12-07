@@ -15,6 +15,7 @@ HOST = "104.198.123.110"  #gce public
 
 #AWS = sys.platform != 'darwin'
 AWS = sys.platform != 'linux2'
+GCE = sys.platform != 'Linux'
 
 localhost_private_key =  "~/.ssh/id_rsa"
 #private_key =  "/home/deep/keys/id_rsa"
