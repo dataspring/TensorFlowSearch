@@ -103,6 +103,7 @@ def hostsetup():
     # start setting up code .........................
     sudo("rm -rf ~/TensorFlowSearch/")
     run("git clone https://github.com/dataspring/TensorFlowSearch")
+    sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/shopsite/sqllite3/")
 
 
 @task
@@ -125,7 +126,7 @@ def setup():
     sudo("mkdir /home/deep/shopsite/index/")
     sudo("mkdir /home/deep/shopsite/sqllite3/")
     sudo("mkdir /home/deep/shopsite/done/")
-    sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/shopsite/sqllite3/")
+    
 
     sudo("chmod 700 -R /home/deep/")
     sudo("chmod 700 -R /home/deep/")
