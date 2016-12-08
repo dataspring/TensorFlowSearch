@@ -165,6 +165,7 @@ def localdevsetup():
     """
     env.password = getpass.getpass('sudo password: ')
     setup()
+    sudo("cp ~/TensorFlowSearch/sqllite3/*.* /home/deep/shopsite/sqllite3/")
     print "running local development tools setup"
     #----- Visual studio code setup ----------------------
     sudo ("add-apt-repository ppa:ubuntu-desktop/ubuntu-make")
