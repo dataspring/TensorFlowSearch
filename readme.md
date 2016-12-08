@@ -3,7 +3,7 @@ TensorFlow Search
 
 A forked project from **[Visual Search Server](https://github.com/AKSHAYUBHAT/VisualSearchServer/)** by AKSHAYU BHAT and modified to add image crawler and web app changes. 
 
-A simple implementation of Visual Search using TensorFlow, InceptionV3 model using Google Cloud. Implements a simple visual indexing and search system, using features derived from Google's inception model trained on the imagenet data. 
+A simple implementation of Visual Search using TensorFlow, InceptionV3 model using Google Cloud. Implements a simple visual indexing and search system, using features derived from Google's inception model trained on the imgnet data. 
 
 You can run a crawler that crawls for sample images and metadata to run the visual search
 
