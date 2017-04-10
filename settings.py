@@ -23,6 +23,8 @@ private_key =  "D:/Data Mining/Python-Meetup/pymeetup.pem"
 CONFIG_PATH = __file__.split('settings.py')[0]
 
 
+
+
 BUCKET_NAME = "aub3visualsearch"
 PREFIX = "nyc"
 
