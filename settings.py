@@ -10,7 +10,7 @@ LOCALUSER = "nachi"
 #HOST = "52.90.19.2"
 #HOST = "192.168.1.117" #home wifi
 LOCALHOST = "127.0.0.1" #office ether
-HOST = "104.198.123.110"  #gce public
+HOST = "52.187.46.52"  #gce public
 
 
 #AWS = sys.platform != 'darwin'
@@ -19,7 +19,7 @@ GCE = sys.platform != 'Linux'
 
 localhost_private_key =  "~/.ssh/id_rsa"
 #private_key =  "/home/deep/keys/id_rsa"
-private_key =  "~/.ssh/id_rsa"
+private_key =  "D:/Data Mining/Python-Meetup/pymeetup.pem"
 CONFIG_PATH = __file__.split('settings.py')[0]
 
 

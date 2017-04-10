@@ -142,9 +142,14 @@ def setup():
     sudo("add-apt-repository ppa:kirillshkrogalev/ffmpeg-next")
     sudo("apt-get update")
     sudo("apt-get install -y ffmpeg")
+    sudo("apt-get install libffi-dev libssl-dev")
 
-
-    sudo("apt-get install python-pip")
+    ### https://bugs.launchpad.net/ubuntu/+source/python-pip/+bug/1658844
+    sudo("python -m pip install -U pip")
+    #sudo("apt-get install python-pip")
+    sudo("pip install -U pip setuptools")
+    ### http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent
+    sudo("pip install requests[security]")
     sudo("pip install pycrypto")
     sudo("pip install fabric")
     sudo("pip install --upgrade fabric")
@@ -155,7 +160,8 @@ def setup():
     sudo("apt-get install -y libblas-dev liblapack-dev libatlas-base-dev gfortran")
     sudo("pip install --upgrade nearpy")
     sudo("apt-get install sqlite3 libsqlite3-dev")
-    sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl")
+    ###sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc0-cp27-none-linux_x86_64.whl")
+    sudo("pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.1-cp27-none-linux_x86_64.whl")
 	
 @task
 def localdevsetup():
@@ -210,7 +216,7 @@ def index():
     except:
         print "Could not created {}, if its on /mnt/ have you set correct permissions?".format(INDEX_PATH)
         raise ValueError
-    inception.load_network()
+    inception.load_network(True)
     count = 0
     start = time.time()
     with inception.tf.Session() as sess:
@@ -328,7 +334,10 @@ def ShopSiteImages():
                         imgCollection = each['collection']['name']
                         imgCountry = each['marketplace']['country']['name']
                         imgPath = DATA_PATH
-                        imgFileName = str(imgId) + ".jpg"
+                        if ".png" in imgUrl:
+                            imgFileName = str(imgId) + ".png"
+                        else:
+                            imgFileName = str(imgId) + ".jpg"
 
                         #------------------------- insret into sqllite ------------------------------------
                         try:
@@ -337,9 +346,12 @@ def ShopSiteImages():
                                 conn.execute(sqlInsert, (imgId, imgUrl, imgTitle, imgPrice, imgCollection, imgCountry, imgCurrencySymbol, imgPath, imgFileName, CRAWL_RUN))
                             #------- if insertion is ok, download the image -------------------
                             try:
-                                if (os.path.isfile(DONE_DATA_PATH + str(imgId) + ".jpg") == False) and (os.path.isfile(DATA_PATH + str(imgId) + ".jpg") == False):
+                                if (os.path.isfile(DONE_DATA_PATH + imgFileName) == False) and (os.path.isfile(DATA_PATH + imgFileName) == False):
                                     downloadCount = downloadCount + 1
-                                    urllib.urlretrieve(imgUrl, DATA_PATH + str(imgId) + ".jpg")
+                                    urllib.urlretrieve(imgUrl, DATA_PATH + imgFileName)
+                                    print 'File downloaded from : ' imgFileName
+                                else:
+                                    print 'File already there...'
                             except Exception as e:
                                 print e
 
