@@ -349,7 +349,7 @@ def ShopSiteImages():
                                 if (os.path.isfile(DONE_DATA_PATH + imgFileName) == False) and (os.path.isfile(DATA_PATH + imgFileName) == False):
                                     downloadCount = downloadCount + 1
                                     urllib.urlretrieve(imgUrl, DATA_PATH + imgFileName)
-                                    print 'File downloaded from : ' imgFileName
+                                    print 'File downloaded from : ' + imgFileName
                                 else:
                                     print 'File already there...'
                             except Exception as e:
