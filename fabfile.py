@@ -145,8 +145,8 @@ def setup():
     sudo("apt-get install libffi-dev libssl-dev")
 
     ### https://bugs.launchpad.net/ubuntu/+source/python-pip/+bug/1658844
-    sudo("python -m pip install -U pip")
-    #sudo("apt-get install python-pip")
+    #sudo("python -m pip install -U pip")
+    sudo("apt-get install python-pip")
     sudo("pip install -U pip setuptools")
     ### http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent
     sudo("pip install requests[security]")
@@ -216,7 +216,7 @@ def index():
     except:
         print "Could not created {}, if its on /mnt/ have you set correct permissions?".format(INDEX_PATH)
         raise ValueError
-    inception.load_network(True)
+    inception.load_network()
     count = 0
     start = time.time()
     with inception.tf.Session() as sess:
