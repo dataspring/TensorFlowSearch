@@ -11,7 +11,7 @@ Pygments==2.0.2
 Twisted-Core==13.2.0
 Twisted-Names==13.2.0
 Twisted-Web==13.2.0
-Werkzeug==0.11.3
+Werkzeug==0.15.3
 apt-xapian-index==0.45
 argparse==1.2.1
 backports-abc==0.4
