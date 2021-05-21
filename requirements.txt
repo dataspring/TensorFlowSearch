@@ -68,7 +68,7 @@ simplegeneric==0.8.1
 singledispatch==3.4.0.3
 six==1.10.0
 ssh-import-id==3.21
-tensorflow==0.5.0
+tensorflow==2.5.0
 terminado==0.5
 tornado==4.3
 traitlets==4.0.0
