@@ -72,7 +72,7 @@ tensorflow==0.5.0
 terminado==0.5
 tornado==4.3
 traitlets==4.0.0
-urllib3==1.7.1
+urllib3==1.26.5
 wheel==0.24.0
 wsgiref==0.1.2
 zope.interface==4.0.5
