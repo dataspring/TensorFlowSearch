@@ -62,7 +62,7 @@ python-debian==0.1.21-nmu2ubuntu2
 pyzmq==15.1.0
 qtconsole==4.1.1
 redis==2.10.5
-requests==2.2.1
+requests==2.20.0
 scipy==0.13.3
 simplegeneric==0.8.1
 singledispatch==3.4.0.3
